@@ -1,12 +1,18 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import * as ReactDOM from "react-dom";
+import { BrowserRouter } from "react-router-dom";
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { createBrowserHistory } from 'history';
+
+const customizedhistory = createBrowserHistory({ basename: '/sub_dirctory' });
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <BrowserRouter history={customizedhistory}>
+      <App />
+    </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')
 );
