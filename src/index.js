@@ -6,7 +6,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { createBrowserHistory } from 'history';
 
-const customizedhistory = createBrowserHistory({ basename: '/sub_dirctory' });
+const customizedhistory = createBrowserHistory({ basename: '/production/s3-private/mono-front/' });
 
 ReactDOM.render(
   <React.StrictMode>
