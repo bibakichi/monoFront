@@ -14,7 +14,7 @@ import getTimecard from './getTimecard';
 //import deletePenFn from './actionTrigger/deletePen'
 
 export default function* rootSaga() {
-    yield takeEvery(actions.user.timecard.get, getTimecard);
+    yield takeEvery(actions.timecard.get, getTimecard);
     //yield takeEvery(actions.server.load, loadFn, replaceReducerFn);
     //yield takeEvery(actions.server.startAutoSave, startAutoSaveFn);
     //yield takeEvery(actions.server.endAutoSave, endAutoSaveFn);

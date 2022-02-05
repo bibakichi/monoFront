@@ -225,7 +225,7 @@ EnhancedTableToolbar.propTypes = {
 
 export default function TableMachinesRecord() {
     const dispatch = useDispatch();
-    const items = useSelector((state) => state.user.timecard.items);
+    const items = useSelector((state) => state.timecard.items);
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('calories');
     const [selected, setSelected] = React.useState([]);

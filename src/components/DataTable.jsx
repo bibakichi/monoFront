@@ -71,7 +71,7 @@ function EnhancedTableHead({ headNames, order, orderBy, onRequestSort }) {
     );
 }
 
-export default function TableMachinesRecord({ rows }) {
+export default function DataTable({ rows }) {
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('calories');
     const [headNames, setHeadNames] = React.useState([]);

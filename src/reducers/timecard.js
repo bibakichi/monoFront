@@ -1,90 +1,40 @@
 import { handleActions } from 'redux-actions';
 import actions from '../actions';
 
+const today = new Date();
+
 const defaultState = {
-    ready: false,
-    filter: {
-        userId: 'ALL',
-        year: '',
-        month: '',
-    },
+    userId: 'ALL',
+    year: String(today.getFullYear()),
+    month: String(today.getMonth() + 1),
     items: [],
-    machinesRecords: [],
 };
 
 export default handleActions({
     //============================================================
-    [actions.user.timecard.get]: (state) => {
+    [actions.timecard.set]: (state, { payload: { object } }) => {
+        return object;
+    },
+    //============================================================
+    [actions.timecard.setUserId]: (state, { payload: { userId } }) => {
         return {
             ...state,
-            ready: false,
+            userId,
         };
     },
     //============================================================
-    [actions.user.timecard.set]: (state, { payload: { object } }) => {
+    [actions.timecard.setYear]: (state, { payload: { year } }) => {
         return {
             ...state,
-            ...object,
-            ready: true,
-            machinesRecords: getMachinesRecords(object.items),
+            year,
         };
     },
     //============================================================
-    [actions.user.timecard.filter.setUserId]: (state, { payload: { userId } }) => {
+    [actions.timecard.setMonth]: (state, { payload: { month } }) => {
         return {
             ...state,
-            filter: {
-                ...state.filter,
-                userId,
-            },
-        };
-    },
-    //============================================================
-    [actions.user.timecard.filter.setYear]: (state, { payload: { year } }) => {
-        return {
-            ...state,
-            filter: {
-                ...state.filter,
-                year,
-            },
-        };
-    },
-    //============================================================
-    [actions.user.timecard.filter.setMonth]: (state, { payload: { month } }) => {
-        return {
-            ...state,
-            filter: {
-                ...state.filter,
-                month,
-            },
+            month,
         };
     },
     //============================================================
 }, defaultState);
-
-const getMachinesRecords = (items) => {
-    const machinesRecords = [];
-    for (const item of items) {
-        console.log(item.equipments);
-        if (typeof item.equipments !== "object") {
-            break;
-        }
-        if (Object.keys(item.equipments).length === 0) {
-            break;
-        }
-        if (!machinesRecords[item.date - 1]) {
-            machinesRecords[item.date - 1] = {
-                "年": item.year,
-                "月": item.month,
-                "日": item.date,
-            };
-        }
-        for (const equipment in item.equipments) {
-            if (!machinesRecords[item.date - 1][equipment]) {
-                machinesRecords[item.date - 1][equipment] = 0;
-            }
-            machinesRecords[item.date - 1][equipment]++;
-        }
-    }
-    return machinesRecords.filter(machinesRecord => machinesRecord);
-}
