@@ -1,12 +1,18 @@
 import { handleActions } from 'redux-actions';
 import actions from '../actions';
 
-const defaultState = [];
+const defaultState = {
+    ready: false,
+    rows: [],
+};
 
 export default handleActions({
     //============================================================
     [actions.timecard.get]: (state) => {
-        return [];
+        return {
+            ...state,
+            ready: false,
+        };
     },
     //============================================================
     [actions.timecard.set]: (state, { payload: { object } }) => {
@@ -33,7 +39,10 @@ export default handleActions({
                 dateMap[item.dateString][machine]++;
             }
         }
-        return Object.keys(dateMap).map(dateString => dateMap[dateString]);
+        return {
+            ready: true,
+            rows: Object.keys(dateMap).map(dateString => dateMap[dateString]),
+        };
     },
     //============================================================
 }, defaultState);

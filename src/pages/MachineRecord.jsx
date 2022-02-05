@@ -15,13 +15,13 @@ export default function MachinesRecord() {
     const dispatch = useDispatch();
     const year = useSelector((state) => state.timecard.year);
     const month = useSelector((state) => state.timecard.month);
-    const machinesRecords = useSelector((state) => state.machinesRecords);
+    const rows = useSelector((state) => state.machinesRecords.rows);
 
     React.useEffect(() => {
-        if (machinesRecords.length === 0) {
+        if (rows.length === 0) {
             dispatch(actions.timecard.get());
         }
-    }, [dispatch, machinesRecords]);
+    }, [dispatch, rows]);
 
     return (
         <>
@@ -51,14 +51,14 @@ export default function MachinesRecord() {
                     </Button>
                 </Stack>
             </Container>
-            <DataTable rows={machinesRecords} />
+            <DataTable rows={rows} />
             {
-                (machinesRecords.length > 0) ? null :
+                (rows.length > 0) ? null :
                     <Box sx={{ textAlign: 'center', p: 2 }}>
                         データがありません
                     </Box>
             }
-            <DownloadButton rows={machinesRecords} />
+            <DownloadButton rows={rows} />
         </>
     );
 }
