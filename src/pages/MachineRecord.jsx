@@ -18,10 +18,12 @@ export default function MachinesRecord() {
     const rows = useSelector((state) => state.machinesRecords.rows);
 
     React.useEffect(() => {
-        if (rows.length === 0) {
-            dispatch(actions.timecard.get());
+        const setup = async () => {
+            await dispatch(actions.timecard.setUserId('ALL'));
+            await dispatch(actions.timecard.get());
         }
-    }, [dispatch, rows]);
+        setup()
+    }, [dispatch]);
 
     return (
         <>

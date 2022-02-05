@@ -13,7 +13,7 @@ import rootSaga from './sagas/rootSaga'
 import reportWebVitals from './reportWebVitals';
 import App from './App';
 
-const customizedhistory = createBrowserHistory({ basename: '/production/s3-private/mono-front/' });
+const customizedhistory = createBrowserHistory({ basename: '/production/s3-private/mono-frontPortal/' });
 
 const sagaMiddleware = createSagaMiddleware();
 const logger = createLogger({ diff: true, collapsed: true, });
