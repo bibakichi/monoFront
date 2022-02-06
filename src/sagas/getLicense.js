@@ -3,16 +3,16 @@ import { put, select } from 'redux-saga/effects';
 import axios from 'axios';
 import actions from '../actions';
 
-export default function* getTimecard() {
-    let userId = yield select(state => state.timecard.userId);
-    let year = yield select(state => state.timecard.year);
-    let month = yield select(state => state.timecard.month);
+export default function* getLicense() {
+    let userId = yield select(state => state.license.userId);
+    let year = yield select(state => state.license.year);
+    let month = yield select(state => state.license.month);
     userId = (userId === "全") ? "ALL" : convertHankaku(userId);
     year = (year === "全") ? "ALL" : convertHankaku(year);
     month = (month === "全") ? "ALL" : convertHankaku(month);
     //
-    let url = 'https://rrzvkjke5e.execute-api.ap-northeast-1.amazonaws.com/production/users/';
-    url += userId + '/timecard?';
+    let url = 'https://rrzvkjke5e.execute-api.ap-northeast-1.amazonaws.com/production/license/';
+    url += userId + '/license?';
     url += year ? ('year=' + year + '&') : '';
     url += month ? ('month=' + month) : '';
     //
@@ -20,7 +20,7 @@ export default function* getTimecard() {
     try {
         const res = yield axios.get(url);
         console.log("ロード完了");
-        yield put(actions.timecard.set(res.data));
+        yield put(actions.license.set(res.data));
     }
     catch (e) {
         alert('ネットワークエラー。スタッフを呼んでください。');

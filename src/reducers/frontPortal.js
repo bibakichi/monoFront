@@ -7,15 +7,18 @@ const nextButtonEnables = {
     "ENTRANCE": false,
     "SELECT_AREA": true,
     "CARD_READER": false,
-    "COMPLETE": true,
+    "FORGET_CARD": true,
     "SELECT_VISIT_ALONE": false,
+    "COMPLETE": false,
     "COMPLETE_VISIT_ALONE": false,
     "COMPLETE_VISIT_TOGETHER": false,
     "COMPLETE_LARGE_PRINTER": false,
 };
 
 const defaultState = {
+    inputText: '',
     step: 0,
+    reserved: false,
     pageIds: [
         "ENTRANCE",
         "SELECT_AREA",
@@ -27,11 +30,19 @@ const defaultState = {
 
 export default handleActions({
     //============================================================
+    [actions.frontPortal.setInputText]: (state, { payload: { inputText } }) => {
+        return {
+            ...state,
+            inputText,
+        };
+    },
+    //============================================================
     [actions.frontPortal.init]: (state) => {
         return defaultState;
     },
     //============================================================
     [actions.frontPortal.next]: (state) => {
+        // 「次へ」ボタンが押されたとき
         let step = state.step + 1;
         let pageIds = state.pageIds;
         if (step >= pageIds.length) {
@@ -47,6 +58,7 @@ export default handleActions({
     },
     //============================================================
     [actions.frontPortal.back]: (state) => {
+        // 「戻る」ボタンが押されたとき
         let step = state.step - 1;
         let pageIds = state.pageIds;
         if (step <= 0) {
@@ -58,6 +70,13 @@ export default handleActions({
             step,
             pageIds,
             nextButtonEnable: nextButtonEnables[pageIds[step]],
+        };
+    },
+    //============================================================
+    [actions.frontPortal.setNextButtonEnable]: (state, { payload: { enable } }) => {
+        return {
+            ...state,
+            nextButtonEnable: nextButtonEnables[state.pageIds[state.step]] && enable,
         };
     },
     //============================================================
@@ -96,6 +115,7 @@ export default handleActions({
         pageIds.push("COMPLETE");     //完了画面を表示
         return {
             ...state,
+            reserved: true,
             step,
             pageIds,
             nextButtonEnable: nextButtonEnables[pageIds[step]],
@@ -106,11 +126,12 @@ export default handleActions({
         // 「予約していない」ボタンが押されたとき
         const step = state.step + 1;
         const pageIds = state.pageIds.slice(0, step);
-        pageIds.push("SELECT_AREA");  //作業エリアを選択させる
         pageIds.push("CARD_READER");  //学生証を読み取る
+        pageIds.push("SELECT_AREA");  //作業エリアを選択させる
         pageIds.push("COMPLETE");     //完了画面を表示
         return {
             ...state,
+            reserved: false,
             step,
             pageIds,
             nextButtonEnable: nextButtonEnables[pageIds[step]],
@@ -129,19 +150,6 @@ export default handleActions({
             pageIds,
             nextButtonEnable: nextButtonEnables[pageIds[step]],
         };
-    },
-    //============================================================
-    [actions.timecard.setUserId]: (state, { payload: { userId } }) => {
-        switch (state.pageIds[state.step]) {
-            case "STAND_BY":
-                break;
-            case "ENTRANCE":
-                break
-            case "BEGINER_SELECT_ALONE":
-                break;
-            default:
-        }
-        return state;
     },
     //============================================================
 }, defaultState);

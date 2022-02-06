@@ -15,6 +15,17 @@ export default function SelectArea() {
     const dispatch = useDispatch();
     const area = useSelector((state) => state.timecard.area);
     const areaState = useSelector((state) => state.timecard.areaState);
+    const nextButtonEnable = useSelector((state) => state.frontPortal.nextButtonEnable);
+
+    React.useEffect(() => {
+        // チェックボックスがどれも選択されていなかったら、
+        // 「次へ」ボタンを押せないようにする
+        let checkEvenOne = false;
+        for (const areaName in area) {
+            checkEvenOne |= area[areaName];
+        }
+        dispatch(actions.frontPortal.setNextButtonEnable(checkEvenOne));
+    }, [dispatch, area, nextButtonEnable]);
 
     const CheckLabel = ({ areaName, small = false }) =>
         <FormControlLabel
@@ -22,10 +33,10 @@ export default function SelectArea() {
             sx={{ pb: 4 }}
             control={
                 <Checkbox
-                    checked={(!areaState[areaName]?.full) & area[areaName] ? true : false}
-                    onChange={(event) =>
-                        dispatch(actions.timecard.setArea(areaName, event.target.checked))
-                    }
+                    checked={area[areaName] ? true : false}
+                    onChange={(event) => {
+                        dispatch(actions.timecard.setArea(areaName, event.target.checked));
+                    }}
                     sx={{
                         color: "primary.main",
                         transform: small ? "scale(1.2)" : "scale(1.5)",
@@ -127,6 +138,7 @@ export default function SelectArea() {
                 textAlign: 'center',
             }}>
                 <Button
+                    disabled={!nextButtonEnable}
                     onClick={() => dispatch(actions.frontPortal.next())}
                     variant="contained"
                     sx={{ py: 2, px: 4 }}

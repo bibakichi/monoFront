@@ -16,6 +16,9 @@ export default handleActions({
     },
     //============================================================
     [actions.timecard.set]: (state, { payload: { object } }) => {
+        if (window.location.pathname !== "/machine_record") {
+            return state;
+        }
         const dateMap = {};
         for (const item of object.items) {
             if (typeof item.machines !== "object") {

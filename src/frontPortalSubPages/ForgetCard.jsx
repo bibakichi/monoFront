@@ -9,7 +9,7 @@ import actions from '../actions';
 
 export default function ForgetCard() {
     const dispatch = useDispatch();
-    const userId = useSelector((state) => state.timecard.userId);
+    const inputText = useSelector((state) => state.frontPortal.inputText);
     return (
         <Box sx={{ textAlign: 'center', height: '100%', }}  >
             <Typography
@@ -31,7 +31,7 @@ export default function ForgetCard() {
                     borderRadius: '5px',
                 }}
             >
-                {userId}
+                {inputText}
             </Typography>
             <Box sx={{
                 position: 'absolute',
@@ -45,9 +45,16 @@ export default function ForgetCard() {
                 }} >
                     <Keyboard
                         newLineOnEnter
-                        onChange={(input) => dispatch(
-                            actions.timecard.setUserId(input)
-                        )}
+                        onChange={(input) => {
+                            const lastChar = input.slice(-1);
+                            if (lastChar === '\n' || lastChar === '\r') {
+                                // 改行が押されたとき
+                                dispatch(actions.frontPortal.submitInputText());
+                            }
+                            else {
+                                dispatch(actions.frontPortal.setInputText(input));
+                            }
+                        }}
                         layout={{
                             default: [
                                 "1 2 3 4 5 6 7 8 9 0 {bksp}",

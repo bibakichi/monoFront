@@ -58,7 +58,7 @@ const Page = ({ pageId }) => {
 
 export default function DotsMobileStepper() {
     const dispatch = useDispatch();
-    const userId = useSelector((state) => state.timecard.userId);
+    const inputText = useSelector((state) => state.frontPortal.inputText);
     const pageIds = useSelector((state) => state.frontPortal.pageIds);
     const step = useSelector((state) => state.frontPortal.step);
     const nextButtonEnable = useSelector((state) => state.frontPortal.nextButtonEnable);
@@ -66,7 +66,7 @@ export default function DotsMobileStepper() {
     const theme = useTheme();
 
     React.useEffect(() => {
-        dispatch(actions.timecard.setUserId(''));
+        dispatch(actions.frontPortal.init());
     }, [dispatch]);
 
     return (
@@ -87,10 +87,14 @@ export default function DotsMobileStepper() {
                     <Input
                         autoFocus
                         inputRef={inputEl}
-                        value={userId}
-                        onChange={(event) => dispatch(
-                            actions.timecard.setUserId(event.target.value)
-                        )}
+                        value={inputText}
+                        onChange={(event) => dispatch(actions.frontPortal.setInputText(event.target.value))}
+                        onKeyDown={event => {
+                            if (event.keyCode === 13) {
+                                // エンターキー押下時の処理
+                                dispatch(actions.frontPortal.submitInputText());
+                            }
+                        }}
                         sx={{
                             zIndex: 10,
                             position: 'absolute',

@@ -7,6 +7,7 @@ const defaultState = {
     userId: '',
     year: String(today.getFullYear()),
     month: String(today.getMonth() + 1),
+    date: 'ALL',
     area: {
         "軽作業エリア": true,
         "金属エリア": false,
@@ -40,6 +41,20 @@ const defaultState = {
 
 export default handleActions({
     //============================================================
+    [actions.frontPortal.init]: (state) => {
+        return {
+            ...state,
+            userId: '',
+            area: {
+                "軽作業エリア": !state?.areaState["軽作業エリア"]?.full,
+                "金属エリア": false,
+                "木工エリア": false,
+                "電子工作室": false,
+                "ミーティングルーム": false,
+            },
+        };
+    },
+    //============================================================
     [actions.timecard.set]: (state, { payload: { object } }) => {
         return {
             ...state,
@@ -65,6 +80,13 @@ export default handleActions({
         return {
             ...state,
             month,
+        };
+    },
+    //============================================================
+    [actions.timecard.setDate]: (state, { payload: { date } }) => {
+        return {
+            ...state,
+            date,
         };
     },
     //============================================================

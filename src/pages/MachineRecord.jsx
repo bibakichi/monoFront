@@ -19,7 +19,11 @@ export default function MachinesRecord() {
 
     React.useEffect(() => {
         const setup = async () => {
+            const today = new Date();
             await dispatch(actions.timecard.setUserId('ALL'));
+            await dispatch(actions.timecard.setYear(String(today.getFullYear())));
+            await dispatch(actions.timecard.setMonth(String(today.getMonth() + 1)));
+            await dispatch(actions.timecard.setDate('ALL'));
             await dispatch(actions.timecard.get());
         }
         setup()
