@@ -17,6 +17,7 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
+import Link from '@mui/material/Link';
 import CopyToClipBoard from 'react-copy-to-clipboard';
 
 const MultiActionAreaCard = ({ linkId, text, title, url, imageUrl, }) => {
@@ -25,7 +26,8 @@ const MultiActionAreaCard = ({ linkId, text, title, url, imageUrl, }) => {
         <Grid item xs={6} md={4} lg={3} >
             <Card sx={{ mt: 2 }}>
                 <CardActionArea
-                    onClick={() => dispatch(actions.links.setLinkId(linkId))}
+                    href={url}
+                    target="_blank"
                 >
                     <CardMedia
                         component="img"
@@ -34,21 +36,28 @@ const MultiActionAreaCard = ({ linkId, text, title, url, imageUrl, }) => {
                     />
                 </CardActionArea>
                 <CardContent>
-                    <Typography variant="h6" >
-                        {title}
-                    </Typography>
+                    <Link
+                        href={url}
+                        target="_blank"
+                        sx={{
+                            textDecoration: 'none',
+                        }}
+                    >
+                        <Typography variant="h6" >
+                            {title}
+                        </Typography>
+                    </Link>
                     <Typography variant="body2" color="text.secondary">
                         {text}
                     </Typography>
                 </CardContent>
                 <CardActions>
                     <Button
-                        href={url}
-                        target="_blank"
+                        onClick={() => dispatch(actions.links.setLinkId(linkId))}
                         size="small"
                         color="primary"
                     >
-                        開く
+                        編集
                     </Button>
                     <CopyToClipBoard text={url}>
                         <Button size="small" color="primary">
