@@ -12,11 +12,16 @@ import { takeEvery, select, put } from 'redux-saga/effects';
 import actions from '../actions';
 import getTimecard from './getTimecard';
 import getLicense from './getLicense';
-//import deletePenFn from './actionTrigger/deletePen'
+import getLinks from './getLinks';
+import postLink from './postLink';
+import deleteLink from './deleteLink';
 
 export default function* rootSaga() {
     yield takeEvery(actions.timecard.get, getTimecard);
     yield takeEvery(actions.license.get, getLicense);
+    yield takeEvery(actions.links.get, getLinks);
+    yield takeEvery(actions.links.post, postLink);
+    yield takeEvery(actions.links.delete, deleteLink);
     yield takeEvery(actions.frontPortal.submitInputText, submitInputText);
 }
 

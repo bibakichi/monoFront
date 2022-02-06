@@ -32,4 +32,17 @@ export default createActions({
     },
     EVENT: {
     },
+    LINKS: {
+        GET: () => ({}),
+        POST: () => ({}),
+        DELETE: () => ({}),
+        SET: (items) => ({ items }),
+        SET_CATEGORY: (category) => ({ category }),
+        SET_LINK_ID: (linkId) => ({ linkId }),
+        SET_NEW_LINK_ID: () => ({}),
+        SET_TITLE: (title) => ({ title }),
+        SET_IMAGE_URL: (imageUrl) => ({ imageUrl }),
+        SET_URL: (url) => ({ url }),
+        SET_TEXT: (text) => ({ text }),
+    },
 })

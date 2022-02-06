@@ -9,11 +9,15 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 
 import FrontPortal from './pages/FrontPortal';
 import License from './pages/License';
-import Event from './pages/Event';
+import Reservation from './pages/Reservation';
+import Record from './pages/Record';
 import Overtime from './pages/Overtime';
-import UndergraduateRecord from './pages/UndergraduateRecord';
-import MachineRecord from './pages/MachineRecord';
-import Machine from './pages/Machine';
+import Event from './pages/Event';
+import Links from './pages/Links';
+import Master from './pages/Master';
+import MasterEvent from './pages/MasterEvent';
+import MasterLicense from './pages/MasterLicense';
+import MasterMachine from './pages/MasterMachine';
 
 export default function App() {
   const location = useLocation();
@@ -23,7 +27,7 @@ export default function App() {
   const [tabTimeout, setTabTimeout] = React.useState(false);
   //################################################################
   React.useEffect(() => {
-    if (location.pathname === "/") {
+    if (location.pathname === "/frontPortal") {
       //受付画面ではメニューを非表示にする
       setTabDisplay(false);
       //ブラウザバックも無効化
@@ -39,7 +43,7 @@ export default function App() {
   }, [location.pathname, location.href, tabTimeout]);
   //################################################################
   const handleRightClick = () => {
-    if (location.pathname === "/") {
+    if (location.pathname === "/frontPortal") {
       //受付画面では右クリックでメニューを表示できる
       if (tabDisplay) {
         setTabDisplay(false);
@@ -58,13 +62,22 @@ export default function App() {
   //################################################################
   return (
     <Box
-      sx={{ minHeight: '100%' }}
+      sx={{ minHeight: '100%', maxWidth: '100vw', }}
       onContextMenu={handleRightClick}
     >
       <Grid container>
         {
           tabDisplay ?
-            <Grid item xs={12} lg={2} xl={1} sx={{ zIndex: 10 }} >
+            <Grid
+              item
+              xs={12} lg={2} xl={1}
+              sx={{
+                position: 'sticky',
+                top: 0,
+                zIndex: 10,
+                height: '100%',
+              }}
+            >
               <Tabs
                 orientation={isLandscape ? "vertical" : "horizontal"}
                 variant="scrollable"
@@ -73,17 +86,17 @@ export default function App() {
                   background: '#fff',
                   border: 1,
                   borderColor: 'divider',
-                  height: isLandscape ? '97vh' : 'auto',
+                  height: isLandscape ? '100vh' : 'auto',
                 }}
               >
-                <Tab component={Link} label="受付画面" to="/" value="/" />
-                <Tab component={Link} label="ライセンス" to="/license" value="/license" />
-                <Tab component={Link} label="設備予約状況" to="/machine" value="/machine" />
-                <Tab component={Link} label="講習予約状況" to="/event" value="/event" />
-                <Tab component={Link} label="職員予約状況" to="/staff" value="/staff" />
-                <Tab component={Link} label="設備記録" to="/machine_record" value="/machine_record" />
-                <Tab component={Link} label="学部記録" to="/undergraduate_record" value="/undergraduate_record" />
+                <Tab component={Link} label="リンク集" to="/" value="/" />
+                <Tab component={Link} label="受付画面" to="/frontPortal" value="/frontPortal" />
+                <Tab component={Link} label="ユーザー登録" to="/license" value="/license" />
+                <Tab component={Link} label="予約状況" to="/reservation " value="/reservation" />
+                <Tab component={Link} label="利用簿" to="/record" value="/record" />
                 <Tab component={Link} label="残業" to="/overtime" value="/overtime" />
+                <Tab component={Link} label="イベント編集" to="/event" value="/event" />
+                <Tab component={Link} label="マスター編集" to="/master" value="/master" />
               </Tabs>
             </Grid>
             : null
@@ -98,13 +111,17 @@ export default function App() {
             overflowWrap: 'break-word',
           }}>
             <Routes>
-              <Route exact path="/" element={<FrontPortal />} />
+              <Route path="/" element={<Links />} />
+              <Route exact path="/frontPortal" element={<FrontPortal />} />
               <Route exact path="/license" element={<License />} />
-              <Route exact path="/machine" element={<Machine />} />
-              <Route exact path="/event" element={<Event />} />
-              <Route exact path="/machine_record" element={<MachineRecord />} />
-              <Route exact path="/undergraduate_record" element={<UndergraduateRecord />} />
+              <Route exact path="/reservation" element={<Reservation />} />
+              <Route exact path="/record" element={<Record />} />
               <Route exact path="/overtime" element={<Overtime />} />
+              <Route exact path="/event" element={<Event />} />
+              <Route exact path="/master" element={<Master />} />
+              <Route exact path="/master/event" element={<MasterEvent />} />
+              <Route exact path="/master/license" element={<MasterLicense />} />
+              <Route exact path="/master/machine" element={<MasterMachine />} />
             </Routes>
           </Box>
         </Grid>

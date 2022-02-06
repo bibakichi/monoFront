@@ -19,6 +19,11 @@ export default function* getLicense() {
     console.log("ロード開始 " + url);
     try {
         const res = yield axios.get(url);
+        if (typeof res.data === "string") {
+            console.log('サーバーエラー：' + res.data);
+            alert('サーバーエラー');
+            return;
+        }
         console.log("ロード完了");
         yield put(actions.license.set(res.data));
     }
