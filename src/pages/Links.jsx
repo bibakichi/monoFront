@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from "react-redux";
 import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
-import Box from '@mui/material/Box';
 import actions from '../actions';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -19,7 +18,86 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import Link from '@mui/material/Link';
+import Collapse from '@mui/material/Collapse';
+import List from '@mui/material/List';
+import ListItemButton from '@mui/material/ListItemButton';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
 import CopyToClipBoard from 'react-copy-to-clipboard';
+
+
+export default function Links() {
+    const dispatch = useDispatch();
+    const categorizedItems = useSelector((state) => state.links.categorizedItems);
+    React.useEffect(() => {
+        dispatch(actions.links.get());
+    }, [dispatch]);
+    return (
+        <>
+            <Container sx={{ minHeight: '100vh', }}>
+                <List>
+                    {Object.keys(categorizedItems)?.map((category, index) =>
+                        <Category
+                            key={category}
+                            category={category}
+                            defaultOpen={index === 0}
+                        />
+                    )}
+                </List>
+                <MyDialog />
+            </Container>
+            <Container sx={{
+                position: 'absolute',
+                bottom: '20px',
+                textAlign: 'right',
+                pointerEvents: 'none',
+            }}>
+                <Fab
+                    color="primary"
+                    aria-label="add"
+                    sx={{ pointerEvents: 'auto', mr: '20px', }}
+                    onClick={() => dispatch(actions.links.setNewLinkId())}
+                >
+                    <AddIcon />
+                </Fab>
+            </Container>
+        </>
+    );
+}
+const Category = ({ category, defaultOpen }) => {
+    const [open, setOpen] = React.useState(defaultOpen);
+    const categorizedItems = useSelector((state) => state.links.categorizedItems);
+    return (
+        <>
+            <ListItemButton
+                onClick={() => setOpen(!open)}
+                sx={{ mt: 3 }}
+            >
+                {open ?
+                    <ExpandLess sx={{ fontSize: '50px' }} /> :
+                    <ExpandMore sx={{ fontSize: '50px' }} />
+                }
+                <Typography variant="h4">
+                    {category}
+                </Typography>
+            </ListItemButton>
+            <Collapse in={open} sx={{ pb: 3 }}>
+                <Grid container spacing={2}>
+                    {categorizedItems[category]?.map(item =>
+                        <MultiActionAreaCard
+                            key={item.linkId}
+                            linkId={item.linkId}
+                            title={item.title}
+                            url={item.url}
+                            imageUrl={item.imageUrl}
+                            text={item.text}
+                        />
+                    )}
+                </Grid>
+            </Collapse >
+        </>
+    );
+}
 
 const MultiActionAreaCard = ({ linkId, text, title, url, imageUrl, }) => {
     const dispatch = useDispatch();
@@ -68,55 +146,6 @@ const MultiActionAreaCard = ({ linkId, text, title, url, imageUrl, }) => {
                 </CardActions>
             </Card>
         </Grid>
-    );
-}
-
-export default function Links() {
-    const dispatch = useDispatch();
-    const categorizedItems = useSelector((state) => state.links.categorizedItems);
-    React.useEffect(() => {
-        dispatch(actions.links.get());
-    }, [dispatch]);
-    return (
-        <>
-            <Container sx={{ minHeight: '100vh', }}>
-                {Object.keys(categorizedItems)?.map(category =>
-                    <Box key={category} sx={{ py: 6, }}>
-                        <Typography variant="h4">
-                            {category}
-                        </Typography>
-                        <Grid container spacing={2}>
-                            {categorizedItems[category]?.map(item =>
-                                <MultiActionAreaCard
-                                    key={item.linkId}
-                                    linkId={item.linkId}
-                                    title={item.title}
-                                    url={item.url}
-                                    imageUrl={item.imageUrl}
-                                    text={item.text}
-                                />
-                            )}
-                        </Grid>
-                    </Box>
-                )}
-                <MyDialog />
-            </Container>
-            <Container sx={{
-                position: 'absolute',
-                bottom: '20px',
-                textAlign: 'right',
-                pointerEvents: 'none',
-            }}>
-                <Fab
-                    color="primary"
-                    aria-label="add"
-                    sx={{ pointerEvents: 'auto', mr: '20px', }}
-                    onClick={() => dispatch(actions.links.setNewLinkId())}
-                >
-                    <AddIcon />
-                </Fab>
-            </Container>
-        </>
     );
 }
 
