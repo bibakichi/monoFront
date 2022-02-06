@@ -14,6 +14,7 @@ import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
@@ -132,8 +133,11 @@ const MyDialog = () => {
             open={linkId ? true : false}
             onClose={() => dispatch(actions.links.setLinkId(null))}
         >
+            <DialogTitle>編集</DialogTitle>
             <DialogContent>
-                <DialogContentText sx={{ width: '1000px' }} />
+                <DialogContentText sx={{ pb: 2, }} >
+                    頻繁にアクセスするWebページを登録すると、全員で共有できます
+                </DialogContentText>
                 <TextField
                     margin="dense"
                     label="カテゴリー"
