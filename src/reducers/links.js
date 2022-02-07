@@ -2,26 +2,28 @@ import { handleActions } from 'redux-actions';
 import actions from '../actions';
 
 const defaultState = {
-    category: '事務',
-    linkId: '',
-    title: '',
-    imageUrl: '',
-    url: '',
-    text: '',
-    newLinkId: 0,
-    items: [],
-    categorizedItems: {},
+    openDialog: false,
+    select: {
+        new: true,
+        category: '',
+        index: 0,
+    },
+    newItem: {
+        category: '事務',
+        order: null,
+        text: '',
+        title: '',
+        url: '',
+        imageUrl: '',
+    },
+    categories: {},
 };
 
 export default handleActions({
     //============================================================
-    [actions.links.set]: (state, { payload: { items } }) => {
+    [actions.links.setAll]: (state, { payload: { items } }) => {
         const categorized = {};
-        let newLinkId = 1;
         for (const item of items) {
-            if (newLinkId <= item.linkId) {
-                newLinkId = item.linkId + 1;
-            }
             if (!categorized[item.category]) {
                 categorized[item.category] = [];
             }
@@ -29,78 +31,67 @@ export default handleActions({
         }
         return {
             ...defaultState,
-            newLinkId,
-            items,
-            categorizedItems: categorized,
+            categories: categorized,
         };
     },
     //============================================================
-    [actions.links.setNewLinkId]: (state) => {
+    [actions.links.setAllByCategorized]: (state, { payload: { categorizedData } }) => {
+        return {
+            ...defaultState,
+            categories: categorizedData,
+        };
+    },
+    //============================================================
+    [actions.links.openDialog]: (state, { payload: { category, index } }) => {
+        const items = state.categories[category];
         return {
             ...state,
-            linkId: state.newLinkId,
-            category: '事務',
-            title: '',
-            imageUrl: '',
-            url: '',
-            text: '',
+            openDialog: true,
+            select: {
+                new: (!category) || (index === null) || (index >= items?.length),
+                category,
+                index,
+            },
         };
     },
     //============================================================
-    [actions.links.setCategory]: (state, { payload: { category } }) => {
+    [actions.links.closeDialog]: (state) => {
         return {
             ...state,
-            category,
+            openDialog: false,
         };
     },
     //============================================================
-    [actions.links.setLinkId]: (state, { payload: { linkId } }) => {
-        for (const item of state.items) {
-            if (item?.linkId !== linkId) {
-                continue;
-            }
+    [actions.links.edit]: (state, { payload: { key, value } }) => {
+        if (state?.select?.new) {
+            //新しい項目を作成しているとき
             return {
                 ...state,
-                linkId,
-                category: item?.category,
-                title: item?.title,
-                imageUrl: item?.imageUrl,
-                url: item?.url,
-                text: item?.text,
+                newItem: {
+                    ...state.newItem,
+                    [key]: value,
+                },
             };
         }
-        return {
-            ...state,
-            linkId,
+        else {
+            //既存の項目を編集しているとき
+            const selectCategory = state?.select?.category;   //選択中のカテゴリ
+            const selectIndex = state?.select?.index;   //選択中の番号
+            const items = [
+                ...state.categories[selectCategory]
+            ];
+            items[selectIndex] = {
+                ...state.categories[selectCategory][selectIndex],
+                [key]: value,
+            };
+            return {
+                ...state,
+                categories: {
+                    ...state.categories,
+                    [selectCategory]: items,
+                },
+            };
         }
-    },
-    //============================================================
-    [actions.links.setTitle]: (state, { payload: { title } }) => {
-        return {
-            ...state,
-            title,
-        };
-    },
-    //============================================================
-    [actions.links.setImageUrl]: (state, { payload: { imageUrl } }) => {
-        return {
-            ...state,
-            imageUrl,
-        };
-    },
-    //============================================================
-    [actions.links.setUrl]: (state, { payload: { url } }) => {
-        return {
-            ...state,
-            url,
-        };
-    },
-    //============================================================
-    [actions.links.setText]: (state, { payload: { text } }) => {
-        return {
-            ...state,
-            text,
-        };
     },
     //============================================================
 }, defaultState);

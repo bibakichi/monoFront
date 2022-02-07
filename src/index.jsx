@@ -5,6 +5,8 @@ import { compose, createStore, applyMiddleware } from 'redux';
 import createSagaMiddleware from 'redux-saga'
 import { Provider } from 'react-redux'
 import { createLogger } from 'redux-logger'
+import { DndProvider } from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
 
 import './index.css';
 import rootReducer from './reducers/rootReducer'
@@ -25,7 +27,9 @@ ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
       <BrowserRouter basename="/production/s3-private/mono-front">
-        <App />
+        <DndProvider backend={HTML5Backend}>
+          <App />
+        </DndProvider>
       </BrowserRouter>
     </Provider>
   </React.StrictMode>,

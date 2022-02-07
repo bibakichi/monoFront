@@ -1,6 +1,10 @@
 import { createActions } from 'redux-actions'
 
 export default createActions({
+    IMAGE_UPLOADER: {
+        REPLACE: (beforeUrl, afterUrl, file) => ({ beforeUrl, afterUrl, file }),
+        UPLOADED: (success, url) => ({ success, url }),
+    },
     FRONT_PORTAL: {
         SET_INPUT_TEXT: (inputText) => ({ inputText }),
         SUBMIT_INPUT_TEXT: () => ({}),
@@ -36,13 +40,11 @@ export default createActions({
         GET: () => ({}),
         POST: () => ({}),
         DELETE: () => ({}),
-        SET: (items) => ({ items }),
-        SET_CATEGORY: (category) => ({ category }),
-        SET_LINK_ID: (linkId) => ({ linkId }),
-        SET_NEW_LINK_ID: () => ({}),
-        SET_TITLE: (title) => ({ title }),
-        SET_IMAGE_URL: (imageUrl) => ({ imageUrl }),
-        SET_URL: (url) => ({ url }),
-        SET_TEXT: (text) => ({ text }),
+        SET_ALL: (items) => ({ items }),
+        SET_ALL_BY_CATEGORIZED: (categorizedData) => ({ categorizedData }),
+        OPEN_DIALOG: (category, index) => ({ category, index }),
+        CLOSE_DIALOG: () => ({}),
+        EDIT: (key, value) => ({ key, value }),
+        MOVE: (ballItem, catcherItem) => ({ ballItem, catcherItem }),
     },
 })

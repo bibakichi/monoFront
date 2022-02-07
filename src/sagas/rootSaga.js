@@ -12,9 +12,11 @@ import { takeEvery, select, put } from 'redux-saga/effects';
 import actions from '../actions';
 import getTimecard from './getTimecard';
 import getLicense from './getLicense';
-import getLinks from './getLinks';
-import postLink from './postLink';
-import deleteLink from './deleteLink';
+import getLinks from './links/get';
+import postLink from './links/post';
+import deleteLink from './links/delete';
+import moveLink from './links/move';
+import replaceImage from './replaceImage';
 
 export default function* rootSaga() {
     yield takeEvery(actions.timecard.get, getTimecard);
@@ -22,7 +24,9 @@ export default function* rootSaga() {
     yield takeEvery(actions.links.get, getLinks);
     yield takeEvery(actions.links.post, postLink);
     yield takeEvery(actions.links.delete, deleteLink);
+    yield takeEvery(actions.links.move, moveLink);
     yield takeEvery(actions.frontPortal.submitInputText, submitInputText);
+    yield takeEvery(actions.imageUploader.replace, replaceImage);
 }
 
 function* submitInputText() {

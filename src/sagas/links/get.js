@@ -1,7 +1,7 @@
 
 import { put } from 'redux-saga/effects';
 import axios from 'axios';
-import actions from '../actions';
+import actions from '../../actions';
 
 export default function* getLinks() {
     let url = 'https://rrzvkjke5e.execute-api.ap-northeast-1.amazonaws.com/production/links';
@@ -15,7 +15,7 @@ export default function* getLinks() {
             return;
         }
         console.log("ロード完了");
-        yield put(actions.links.set(res.data));
+        yield put(actions.links.setAll(res.data));
     }
     catch (e) {
         alert('ネットワークエラー');

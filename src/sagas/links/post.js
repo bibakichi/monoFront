@@ -1,28 +1,19 @@
 
 import { select, put } from 'redux-saga/effects';
 import axios from 'axios';
-import actions from '../actions';
+import actions from '../../actions';
 
 export default function* postLink() {
-    const linkId = yield select(state => state.links.linkId);
-    const category = yield select(state => state.links.category);
-    const title = yield select(state => state.links.title);
-    const imageUrl = yield select(state => state.links.imageUrl);
-    const url = yield select(state => state.links.url);
-    const text = yield select(state => state.links.text);
+    const newFlag = yield select(state => state?.links?.select?.new);
+    const selectCategory = yield select(state => state?.links?.select?.category);
+    const newItem = yield select(state => state?.links?.newItem);
+    const categories = yield select(state => state?.links?.categories);
     //
     console.log("アップロード開始");
     try {
         const res = yield axios.post(
             'https://rrzvkjke5e.execute-api.ap-northeast-1.amazonaws.com/production/links',
-            {
-                category,
-                linkId,
-                title,
-                imageUrl,
-                url,
-                text,
-            }
+            newFlag ? newItem : categories[selectCategory],
         );
         if (typeof res.data === "string") {
             console.log('サーバーエラー：' + res.data);
@@ -30,7 +21,7 @@ export default function* postLink() {
             return;
         }
         console.log("アップロード完了");
-        yield put(actions.links.set(res.data));
+        yield put(actions.links.setAll(res.data));
     }
     catch (e) {
         alert('ネットワークエラー');

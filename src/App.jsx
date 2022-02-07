@@ -29,7 +29,7 @@ export default function App() {
   React.useEffect(() => {
     if (location.pathname === "/frontPortal") {
       //受付画面ではメニューを非表示にする
-      setTabDisplay(false);
+      window.setTimeout(() => setTabDisplay(false), 2000);
       //ブラウザバックも無効化
       window.history.pushState(null, null, location.href);
       window.addEventListener('popstate', (e) => {
@@ -62,7 +62,7 @@ export default function App() {
   //################################################################
   return (
     <Box
-      sx={{ minHeight: '100%', maxWidth: '100vw', }}
+      sx={{ height: '100vh', maxWidth: '100vw', }}
       onContextMenu={handleRightClick}
     >
       <Grid container>
