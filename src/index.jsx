@@ -5,15 +5,12 @@ import { compose, createStore, applyMiddleware } from 'redux';
 import createSagaMiddleware from 'redux-saga'
 import { Provider } from 'react-redux'
 import { createLogger } from 'redux-logger'
-import { createBrowserHistory } from 'history';
 
 import './index.css';
 import rootReducer from './reducers/rootReducer'
 import rootSaga from './sagas/rootSaga'
 import reportWebVitals from './reportWebVitals';
 import App from './App';
-
-const customizedhistory = createBrowserHistory({ basename: '/production/s3-private/mono-frontPortal/' });
 
 const sagaMiddleware = createSagaMiddleware();
 const logger = createLogger({ diff: true, collapsed: true, });
@@ -27,7 +24,7 @@ sagaMiddleware.run(rootSaga);
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <BrowserRouter history={customizedhistory}>
+      <BrowserRouter basename="/production/s3-private/mono-front">
         <App />
       </BrowserRouter>
     </Provider>
