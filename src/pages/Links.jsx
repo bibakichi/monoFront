@@ -15,14 +15,11 @@ import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import Link from '@mui/material/Link';
 import Collapse from '@mui/material/Collapse';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
-import CopyToClipBoard from 'react-copy-to-clipboard';
 import { useDrag, useDrop } from 'react-dnd';
 
 import FileUploader from '../components/FileUploader';
@@ -35,9 +32,15 @@ export default function Links() {
         dispatch(actions.links.get());
     }, [dispatch]);
     return (
-        <>
-            <Box sx={{ background: '#fafafa' }}>
-                <Container sx={{ minHeight: '100vh', }}>
+        <Box sx={{ height: '100vh', overflowY: 'scroll' }}>
+            <Box sx={{ background: '#eee', }}>
+                <Container sx={{ minHeight: '100vh', pt: '40px', }}>
+                    <Typography variant="h4">
+                        綾杉珈琲 管理ページ
+                    </Typography>
+                    <Typography>
+                        ドラッグ＆ドロップすることで、順序を入れ替えることができます。
+                    </Typography>
                     <List>
                         {Object.keys(categories)?.map((category, index) =>
                             <Category
@@ -63,7 +66,7 @@ export default function Links() {
                 <AddIcon />
             </Fab>
             <MyDialog />
-        </>
+        </Box>
     );
 }
 const Category = ({ category, items, defaultOpen }) => {
@@ -104,12 +107,12 @@ const Category = ({ category, items, defaultOpen }) => {
                         <MyCard
                             key={category + '/' + items.order + '/' + index}
                             category={category}
-                            order={item.order}
-                            title={item.title}
-                            url={item.url}
-                            imageUrl={item.imageUrl}
-                            text={item.text}
                             index={index}
+                            item={{
+                                ...item,
+                                category,
+                                index,
+                            }}
                         />
                     )}
                 </Grid>
@@ -118,8 +121,7 @@ const Category = ({ category, items, defaultOpen }) => {
     );
 }
 
-const MyCard = (props) => {
-    const { category, text, title, url, imageUrl, index } = props;
+const MyCard = ({ category, index, item }) => {
     const dispatch = useDispatch();
     const ref = React.useRef(null);
     const [{ handlerId }, drop] = useDrop({
@@ -128,7 +130,7 @@ const MyCard = (props) => {
             if (!ref.current) {
                 return;
             }
-            const catcherItem = props;
+            const catcherItem = item;
             if (ballItem?.category === catcherItem?.category && ballItem?.index === catcherItem?.index) {
                 return;//アイテムを自分自身に置き換えない
             }
@@ -139,7 +141,7 @@ const MyCard = (props) => {
     });
     const [{ isDragging }, drag] = useDrag({
         type: 'KIMURA',
-        item: () => ({ ...props }),
+        item: () => ({ ...item }),
     });
     drag(drop(ref));
     return (
@@ -153,29 +155,30 @@ const MyCard = (props) => {
                 }}
             >
                 <CardActionArea
-                    href={url}
-                    target="_blank"
+                    onClick={() => dispatch(actions.links.openDialog(category, index))}
                 >
                     <CardMedia
                         component="img"
                         height="100"
-                        image={imageUrl}
+                        image={item.image1}
                     />
                 </CardActionArea>
                 <CardContent>
-                    <Link
-                        href={url}
-                        target="_blank"
+                    <Typography variant="h6" >
+                        {item.title}
+                    </Typography>
+                    <Typography  >
+                        {item.subTitle}
+                    </Typography>
+                    <Typography
+                        variant="body2"
+                        color="text.secondary"
                         sx={{
-                            textDecoration: 'none',
+                            maxHeight: '70px',
+                            overflow: 'hidden',
                         }}
                     >
-                        <Typography variant="h6" >
-                            {title}
-                        </Typography>
-                    </Link>
-                    <Typography variant="body2" color="text.secondary">
-                        {text}
+                        {item.text}
                     </Typography>
                 </CardContent>
                 <CardActions>
@@ -186,11 +189,12 @@ const MyCard = (props) => {
                     >
                         編集
                     </Button>
-                    <CopyToClipBoard text={url}>
-                        <Button size="small" color="primary">
-                            URLをコピー
-                        </Button>
-                    </CopyToClipBoard>
+                    <Button
+                        color="error"
+                        onClick={() => dispatch(actions.links.delete(category, index))}
+                    >
+                        削除
+                    </Button>
                 </CardActions>
             </Card>
         </Grid>
@@ -205,77 +209,104 @@ const MyDialog = () => {
     const newItem = useSelector(state => state?.links?.newItem);
     const categories = useSelector(state => state?.links?.categories);
     const newFlag = useSelector(state => state?.links?.select?.new);
-    const {
-        category,
-        text,
-        title,
-        url,
-        imageUrl,
-    } = newFlag ? newItem : categories[selectCategory][selectIndex];
+    const item = newFlag ? newItem : categories[selectCategory][selectIndex];
     return (
         <Dialog
             sx={{ zIndex: 999 }}
             open={open ? true : false}
-            onClose={() => dispatch(actions.links.closeDialog())}
+            onClose={() => {
+                if (newFlag) {
+                    dispatch(actions.links.closeDialog());
+                }
+                else {
+                    dispatch(actions.links.post());
+                }
+            }}
         >
             <DialogContent>
-                <DialogContentText sx={{ pb: 2, }} >
-                    頻繁にアクセスするWebページを登録すると、全員で共有できます
-                </DialogContentText>
                 {newFlag ?
                     <TextField
                         margin="dense"
                         label="カテゴリー"
                         variant="outlined"
-                        value={category}
+                        value={item.category}
                         onChange={(event) => dispatch(actions.links.edit('category', event.target.value))}
                     />
                     : null
                 }
                 <TextField
+                    autoFocus
                     margin="dense"
                     label="タイトル"
                     multiline
                     rows={2}
                     fullWidth
                     variant="outlined"
-                    value={title}
+                    value={item.title}
                     onChange={(event) => dispatch(actions.links.edit('title', event.target.value))}
                 />
                 <TextField
-                    autoFocus
                     margin="dense"
-                    label="URL"
+                    label="サブタイトル"
+                    multiline
+                    rows={2}
                     fullWidth
                     variant="outlined"
-                    value={url}
+                    value={item.subTitle}
+                    onChange={(event) => dispatch(actions.links.edit('subTitle', event.target.value))}
+                />
+                <TextField
+                    margin="dense"
+                    label="クリックしたときにジャンプするURL"
+                    fullWidth
+                    variant="outlined"
+                    value={item.url}
                     onChange={(event) => dispatch(actions.links.edit('url', event.target.value))}
                 />
+                <Grid container spacing={2} sx={{ p: 1 }}>
+                    <Grid item xs={6} >
+                        <FileUploader
+                            url={item.image1}
+                            onChange={newUrl => dispatch(actions.links.edit('image1', newUrl))}
+                        />
+                    </Grid>
+                    <Grid item xs={6} >
+                        <FileUploader
+                            url={item.image2}
+                            onChange={newUrl => dispatch(actions.links.edit('image2', newUrl))}
+                        />
+                    </Grid>
+                    <Grid item xs={6} >
+                        <FileUploader
+                            url={item.image3}
+                            onChange={newUrl => dispatch(actions.links.edit('image3', newUrl))}
+                        />
+                    </Grid>
+                    <Grid item xs={6} >
+                        <FileUploader
+                            url={item.image4}
+                            onChange={newUrl => dispatch(actions.links.edit('image4', newUrl))}
+                        />
+                    </Grid>
+                </Grid>
                 <TextField
                     margin="dense"
                     label="文章"
                     multiline
-                    rows={4}
+                    rows={16}
                     fullWidth
                     variant="outlined"
-                    value={text}
+                    value={item.text}
                     onChange={(event) => dispatch(actions.links.edit('text', event.target.value))}
-                />
-                <FileUploader
-                    url={imageUrl}
-                    onChange={newUrl => dispatch(actions.links.edit('imageUrl', newUrl))}
                 />
             </DialogContent>
             <DialogActions>
-                <Button
-                    color="error"
-                    onClick={() => dispatch(actions.links.delete())}
-                >
-                    削除
-                </Button>
-                <Button onClick={() => dispatch(actions.links.closeDialog())} >
-                    キャンセル
-                </Button>
+                {newFlag ?
+                    <Button onClick={() => dispatch(actions.links.closeDialog())} >
+                        キャンセル
+                    </Button>
+                    : null
+                }
                 <Button onClick={() => dispatch(actions.links.post())} >
                     OK
                 </Button>

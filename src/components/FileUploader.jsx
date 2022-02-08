@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { NativeTypes } from 'react-dnd-html5-backend';
 import { useDrop } from 'react-dnd';
 import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 import { v4 as uuidv4 } from 'uuid';
 
 import actions from '../actions';
@@ -89,9 +90,7 @@ const TargetBox = ({ children, onDrop, backImageUrl }) => {
     <Box
       ref={drop}
       sx={{
-        mt: 2,
         border: isActive ? '2px solid #000' : '1px solid #ccc',
-
         borderRadius: '5px',
         backgroundImage: 'url("' + backImageUrl + '")',
         backgroundPosition: 'center',
@@ -111,9 +110,9 @@ const TargetBox = ({ children, onDrop, backImageUrl }) => {
           background: isActive ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.3)',
         }}
       >
-        <span style={{ background: 'rgba(255,255,255)' }}>
+        <Typography sx={{ background: 'rgba(255,255,255)' }}>
           {isActive ? 'ドロップでアップロード' : children}
-        </span>
+        </Typography>
       </Box>
     </Box>
   )

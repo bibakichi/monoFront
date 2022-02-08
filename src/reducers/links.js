@@ -9,12 +9,16 @@ const defaultState = {
         index: 0,
     },
     newItem: {
-        category: '事務',
+        category: '商品',
         order: null,
         text: '',
         title: '',
+        subTitle: '',
         url: '',
-        imageUrl: '',
+        image1: '',
+        image2: '',
+        image3: '',
+        image4: '',
     },
     categories: {},
 };

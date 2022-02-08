@@ -8,10 +8,8 @@
 //takeLatest                        処理をキャンセルし、新しい処理を行う
 //axios.get(..)                     GET関数とかをコール
 
-import { takeEvery, select, put } from 'redux-saga/effects';
+import { takeEvery } from 'redux-saga/effects';
 import actions from '../actions';
-import getTimecard from './getTimecard';
-import getLicense from './getLicense';
 import getLinks from './links/get';
 import postLink from './links/post';
 import deleteLink from './links/delete';
@@ -19,68 +17,9 @@ import moveLink from './links/move';
 import replaceImage from './replaceImage';
 
 export default function* rootSaga() {
-    yield takeEvery(actions.timecard.get, getTimecard);
-    yield takeEvery(actions.license.get, getLicense);
     yield takeEvery(actions.links.get, getLinks);
     yield takeEvery(actions.links.post, postLink);
     yield takeEvery(actions.links.delete, deleteLink);
     yield takeEvery(actions.links.move, moveLink);
-    yield takeEvery(actions.frontPortal.submitInputText, submitInputText);
     yield takeEvery(actions.imageUploader.replace, replaceImage);
-}
-
-function* submitInputText() {
-    let inputText = yield select(state => state.frontPortal.inputText);
-    inputText = convertHankaku(inputText);
-    const array = inputText.split(',');
-    const userId = formatID(array[0]);
-    //const userName = (array.length > 1) ? array[1] : '';
-    //
-    yield put(actions.frontPortal.setInputText(''));  //テキストエリアを空にする
-    if (userId === '') {
-        alert('入力された学籍番号は無効な書式です。スタッフを呼んでください。');
-        return;
-    }
-    yield put(actions.license.setUserId(userId));
-    yield put(actions.license.setYear('ALL'));
-    yield put(actions.license.setMonth('ALL'));
-    yield put(actions.license.get());
-    //
-    yield put(actions.timecard.setUserId(userId));
-    yield put(actions.timecard.setYear('ALL'));
-    yield put(actions.timecard.setMonth('ALL'));
-    yield put(actions.timecard.setDate('ALL'));
-    yield put(actions.timecard.get());
-}
-
-//文字列を0で埋める関数
-//numにオリジナルの数字を、lengthに桁数をいれてください。
-function zeroPadding(num, length) {
-    return ('0000000000' + num).slice(-length);
-}
-
-//学籍番号を整形する関数
-function formatID(id) {
-    if (id === '' || id === null) {
-        return '';
-    }
-    id = zeroPadding(id, 8);
-    id = id.toUpperCase();
-    let ok = id.match("^(([A-Z]{2}|[a-z]{2}|(00))[0-9]{6})$");  //正規表現
-    if (ok === null) {
-        return '';
-    }
-    return id;
-}
-
-const convertHankaku = (str) => {
-    if (typeof str === "number") {
-        return String(str);
-    }
-    else if (typeof str !== "string") {
-        return "";
-    }
-    return str.replace(/[Ａ-Ｚａ-ｚ０-９]/g, function (s) {
-        return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
-    });
 }
