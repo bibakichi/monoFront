@@ -26,7 +26,7 @@ sagaMiddleware.run(rootSaga);
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <BrowserRouter basename="/production/s3-private/mono-front/index.html">
+      <BrowserRouter basename="/production/s3/mono-front/index.html">
         <DndProvider backend={HTML5Backend}>
           <App />
         </DndProvider>
