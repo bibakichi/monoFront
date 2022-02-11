@@ -20,6 +20,10 @@ export default function Preview() {
     return (
         <Box
             sx={{
+                background: '#fff',
+                mx: 'auto',
+                width: '428px',
+                overflowX: 'hidden',
                 overflowY: 'scroll',
                 height: '100vh',
                 scrollSnapType: snap ? 'y mandatory' : '',
